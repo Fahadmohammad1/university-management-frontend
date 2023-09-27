@@ -60,7 +60,17 @@ const Sidebar = () => {
         bottom: 0,
       }}
     >
-      <div className="demo-logo-vertical" />
+      <div
+        style={{
+          color: "white",
+          fontSize: "2rem",
+          textAlign: "center",
+          fontWeight: "bold",
+          marginBottom: "1rem",
+        }}
+      >
+        PH-University
+      </div>
       <Menu
         theme="dark"
         defaultSelectedKeys={["1"]}
