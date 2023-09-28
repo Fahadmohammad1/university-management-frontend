@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Layout, Menu } from "antd";
-import { USER_ROLE } from "@/app/constants/role";
-import { sidebarItems } from "@/app/constants/sidebaritems";
+import { USER_ROLE } from "@/constants/role";
+import { sidebarItems } from "@/constants/sidebaritems";
 
 const { Sider } = Layout;
 
