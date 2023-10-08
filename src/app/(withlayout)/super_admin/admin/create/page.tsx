@@ -9,12 +9,10 @@ import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
 import UploadImage from "@/components/ui/UploadImage";
 import { bloodGroupOptions, genderOptions } from "@/constants/global";
 import { useAddAdminWithFormDataMutation } from "@/redux/api/adminApi";
-
 import { useDepartmentsQuery } from "@/redux/api/departmentApi";
 import { adminSchema } from "@/schemas/admin";
 import { IDepartment } from "@/types";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import { Button, Col, Row, message } from "antd";
 
 const CreateAdminPage = () => {
@@ -33,6 +31,7 @@ const CreateAdminPage = () => {
     });
 
   const onSubmit = async (values: any) => {
+    console.log(values);
     const obj = { ...values };
     const file = obj["file"];
     delete obj["file"];
