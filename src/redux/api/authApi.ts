@@ -1,5 +1,5 @@
+import { tagTypes } from "../tag-types";
 import { baseApi } from "./baseApi";
-
 const AUTH_URL = "/auth";
 
 export const authApi = baseApi.injectEndpoints({
@@ -10,10 +10,9 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         data: loginData,
       }),
-      invalidatesTags: ["user"],
+      invalidatesTags: [tagTypes.user],
     }),
   }),
-  overrideExisting: false,
 });
 
 export const { useUserLoginMutation } = authApi;

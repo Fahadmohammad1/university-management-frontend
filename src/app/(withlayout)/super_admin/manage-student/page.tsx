@@ -1,6 +1,6 @@
 "use client";
 
-import UMBreadCrumb from "@/components/ui/UMBreadCrump";
+import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
 import { getUserInfo } from "@/services/auth.service";
 import { Button } from "antd";
 import Link from "next/link";

@@ -1,286 +1,185 @@
-// "use client";
+"use client";
+import ActionBar from "@/components/ui/ActionBar";
+import { Button, Input } from "antd";
+import Link from "next/link";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  FilterOutlined,
+  ReloadOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
+import { useState } from "react";
+import { useDebounced } from "@/redux/hooks";
+import UMTable from "@/components/ui/UMTable";
+import { useAdminsQuery } from "@/redux/api/adminApi";
+import { IDepartment } from "@/types";
+import dayjs from "dayjs";
+import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
 
-// import Form from "@/components/Forms/Form";
-// import FormDatePicker from "@/components/Forms/FormDatePicker";
-// import FormInput from "@/components/Forms/FormInput";
-// import FormSelectField from "@/components/Forms/FormSelectField";
-// import FormTextArea from "@/components/Forms/FormTextArea";
-// import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
-// import UploadImage from "@/components/ui/UploadImage";
+const AdminPage = () => {
+  const query: Record<string, any> = {};
 
-// import { adminSchema } from "@/schemas/admin";
-// import { yupResolver } from "@hookform/resolvers/yup";
+  const [page, setPage] = useState<number>(1);
+  const [size, setSize] = useState<number>(10);
+  const [sortBy, setSortBy] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-// import { Button, Col, Row } from "antd";
+  query["limit"] = size;
+  query["page"] = page;
+  query["sortBy"] = sortBy;
+  query["sortOrder"] = sortOrder;
 
-// const CreateAdminPage = () => {
-//   const onSubmit = async (data: any) => {
-//     try {
-//       console.log(data);
-//     } catch (err: any) {
-//       console.error(err.message);
-//     }
-//   };
+  const debouncedSearchTerm = useDebounced({
+    searchQuery: searchTerm,
+    delay: 600,
+  });
 
-//   return (
-//     <div>
-//       <UMBreadCrumb
-//         items={[
-//           {
-//             label: "super_admin",
-//             link: "/super_admin",
-//           },
-//           {
-//             label: "admin",
-//             link: "/super_admin/admin",
-//           },
-//         ]}
-//       />
-//       <h1>Create Admin</h1>
+  if (!!debouncedSearchTerm) {
+    query["searchTerm"] = debouncedSearchTerm;
+  }
+  const { data, isLoading } = useAdminsQuery({ ...query });
 
-//       <div>
-//         <Form submitHandler={onSubmit} resolver={yupResolver(adminSchema)}>
-//           <div
-//             style={{
-//               border: "1px solid #d9d9d9",
-//               borderRadius: "5px",
-//               padding: "15px",
-//               marginBottom: "10px",
-//             }}
-//           >
-//             <p
-//               style={{
-//                 fontSize: "18px",
-//                 marginBottom: "10px",
-//               }}
-//             >
-//               Admin Information
-//             </p>
-//             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-//               <Col
-//                 className="gutter-row"
-//                 span={8}
-//                 style={{
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <FormInput
-//                   type="text"
-//                   name="admin.name.firstName"
-//                   size="large"
-//                   label="First Name"
-//                 />
-//               </Col>
-//               <Col
-//                 className="gutter-row"
-//                 span={8}
-//                 style={{
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <FormInput
-//                   type="text"
-//                   name="admin.name.middleName"
-//                   size="large"
-//                   label="Middle Name"
-//                 />
-//               </Col>
-//               <Col
-//                 className="gutter-row"
-//                 span={8}
-//                 style={{
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <FormInput
-//                   type="text"
-//                   name="admin.name.lastName"
-//                   size="large"
-//                   label="Last Name"
-//                 />
-//               </Col>
-//               <Col
-//                 className="gutter-row"
-//                 span={8}
-//                 style={{
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <FormInput
-//                   type="password"
-//                   name="password"
-//                   size="large"
-//                   label="Password"
-//                 />
-//               </Col>
-//               <Col
-//                 className="gutter-row"
-//                 span={8}
-//                 style={{
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <FormSelectField
-//                   size="large"
-//                   name="admin.gender"
-//                   options={genderOptions}
-//                   label="Gender"
-//                   placeholder="Select"
-//                 />
-//               </Col>
-//               <Col
-//                 className="gutter-row"
-//                 span={8}
-//                 style={{
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <FormSelectField
-//                   size="large"
-//                   name="admin.managementDepartment"
-//                   options={departmentOptions}
-//                   label="Department"
-//                   placeholder="Select"
-//                 />
-//               </Col>
-//               <Col
-//                 className="gutter-row"
-//                 span={8}
-//                 style={{
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <UploadImage />
-//               </Col>
-//             </Row>
-//           </div>
+  const admins = data?.admins;
+  const meta = data?.meta;
 
-//           {/* basic info */}
-//           <div
-//             style={{
-//               border: "1px solid #d9d9d9",
-//               borderRadius: "5px",
-//               padding: "15px",
-//               marginBottom: "10px",
-//             }}
-//           >
-//             <p
-//               style={{
-//                 fontSize: "18px",
-//                 marginBottom: "10px",
-//               }}
-//             >
-//               Basic Information
-//             </p>
-//             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-//               <Col
-//                 className="gutter-row"
-//                 span={8}
-//                 style={{
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <FormInput
-//                   type="email"
-//                   name="admin.email"
-//                   size="large"
-//                   label="Email address"
-//                 />
-//               </Col>
-//               <Col
-//                 className="gutter-row"
-//                 span={8}
-//                 style={{
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <FormInput
-//                   type="text"
-//                   name="admin.contactNo"
-//                   size="large"
-//                   label="Contact No."
-//                 />
-//               </Col>
-//               <Col
-//                 className="gutter-row"
-//                 span={8}
-//                 style={{
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <FormInput
-//                   type="text"
-//                   name="admin.emergencyContactNo"
-//                   size="large"
-//                   label="Emergency Contact No."
-//                 />
-//               </Col>
-//               <Col
-//                 className="gutter-row"
-//                 span={8}
-//                 style={{
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <FormDatePicker
-//                   name="admin.dateOfBirth"
-//                   label="Date of birth"
-//                   size="large"
-//                 />
-//               </Col>
-//               <Col
-//                 className="gutter-row"
-//                 span={8}
-//                 style={{
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <FormSelectField
-//                   size="large"
-//                   name="admin.bloodGroup"
-//                   options={bloodGroupOptions}
-//                   label="Blood group"
-//                   placeholder="Select"
-//                 />
-//               </Col>
-//               <Col
-//                 className="gutter-row"
-//                 span={8}
-//                 style={{
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <FormInput
-//                   type="text"
-//                   name="admin.designation"
-//                   size="large"
-//                   label="Designation"
-//                 />
-//               </Col>
-//               <Col span={12} style={{ margin: "10px 0" }}>
-//                 <FormTextArea
-//                   name="admin.presentAddress"
-//                   label="Present address"
-//                   rows={4}
-//                 />
-//               </Col>
+  const columns = [
+    {
+      title: "Id",
+      dataIndex: "id",
+      sorter: true,
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      render: function (data: Record<string, string>) {
+        const fullName = `${data?.firstName} ${data?.middleName} ${data?.lastName}`;
+        return <>{fullName}</>;
+      },
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+    },
+    {
+      title: "Department",
+      dataIndex: "managementDepartment",
+      render: function (data: IDepartment) {
+        return <>{data?.title}</>;
+      },
+    },
+    {
+      title: "Designation",
+      dataIndex: "designation",
+    },
+    {
+      title: "Created at",
+      dataIndex: "createdAt",
+      render: function (data: any) {
+        return data && dayjs(data).format("MMM D, YYYY hh:mm A");
+      },
+      sorter: true,
+    },
+    {
+      title: "Contact no.",
+      dataIndex: "contactNo",
+    },
+    {
+      title: "Action",
+      dataIndex: "id",
+      render: function (data: any) {
+        return (
+          <>
+            <Link href={`/super_admin/admin/details/${data.id}`}>
+              <Button onClick={() => console.log(data)} type="primary">
+                <EyeOutlined />
+              </Button>
+            </Link>
+            <Link href={`/super_admin/admin/edit/${data.id}`}>
+              <Button
+                style={{
+                  margin: "0px 5px",
+                }}
+                onClick={() => console.log(data)}
+                type="primary"
+              >
+                <EditOutlined />
+              </Button>
+            </Link>
+            <Button onClick={() => console.log(data)} type="primary" danger>
+              <DeleteOutlined />
+            </Button>
+          </>
+        );
+      },
+    },
+  ];
+  const onPaginationChange = (page: number, pageSize: number) => {
+    console.log("Page:", page, "PageSize:", pageSize);
+    setPage(page);
+    setSize(pageSize);
+  };
+  const onTableChange = (pagination: any, filter: any, sorter: any) => {
+    const { order, field } = sorter;
+    // console.log(order, field);
+    setSortBy(field as string);
+    setSortOrder(order === "ascend" ? "asc" : "desc");
+  };
 
-//               <Col span={12} style={{ margin: "10px 0" }}>
-//                 <FormTextArea
-//                   name="admin.permanentAddress"
-//                   label="Permanent address"
-//                   rows={4}
-//                 />
-//               </Col>
-//             </Row>
-//           </div>
-//           <Button htmlType="submit" type="primary">
-//             Create
-//           </Button>
-//         </Form>
-//       </div>
-//     </div>
-//   );
-// };
+  const resetFilters = () => {
+    setSortBy("");
+    setSortOrder("");
+    setSearchTerm("");
+  };
+  return (
+    <div>
+      <UMBreadCrumb
+        items={[
+          {
+            label: "super_admin",
+            link: "/super_admin",
+          },
+        ]}
+      />
+      <ActionBar title="Department List">
+        <Input
+          size="large"
+          placeholder="Search"
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            width: "20%",
+          }}
+        />
+        <div>
+          <Link href="/super_admin/admin/create">
+            <Button type="primary">Create Admin</Button>
+          </Link>
+          {(!!sortBy || !!sortOrder || !!searchTerm) && (
+            <Button
+              style={{ margin: "0px 5px" }}
+              type="primary"
+              onClick={resetFilters}
+            >
+              <ReloadOutlined />
+            </Button>
+          )}
+        </div>
+      </ActionBar>
 
-// export default CreateAdminPage;
+      <UMTable
+        loading={isLoading}
+        columns={columns}
+        dataSource={admins}
+        pageSize={size}
+        totalPages={meta?.total}
+        showSizeChanger={true}
+        onPaginationChange={onPaginationChange}
+        onTableChange={onTableChange}
+        showPagination={true}
+      />
+    </div>
+  );
+};
+
+export default AdminPage;
