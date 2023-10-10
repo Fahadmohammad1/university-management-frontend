@@ -1,6 +1,6 @@
 import { authKey } from "@/constants/storageKey";
 import { IGenericErrorResponse, ResponseSuccessType } from "@/types";
-import { getFromToLocalStorage } from "@/utils/local-storage";
+import { getFromLocalStorage } from "@/utils/local-storage";
 
 import axios from "axios";
 
@@ -13,7 +13,7 @@ instance.defaults.timeout = 60000;
 instance.interceptors.request.use(
   function (config) {
     // Do something before request is sent
-    const accessToken = getFromToLocalStorage(authKey);
+    const accessToken = getFromLocalStorage(authKey);
     if (accessToken) {
       config.headers.Authorization = accessToken;
     }
